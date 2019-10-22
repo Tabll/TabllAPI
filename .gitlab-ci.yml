@@ -71,7 +71,7 @@ test:
 
   script:
     # - ~/.composer/vendor/bin/phpcs --error-severity=1 --warning-severity=8 --extensions=php
-    # - cp .env.unit_test .env
+    - cp .env.test .env
     - composer config repo.packagist composer https://mirrors.aliyun.com/composer/
     - composer install --prefer-dist --no-scripts -o
     # - php artisan optimize
