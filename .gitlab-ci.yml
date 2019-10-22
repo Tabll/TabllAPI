@@ -77,6 +77,9 @@ test:
     # - php artisan optimize
     # - php artisan migrate
     # - php artisan db:seed
+
+    - php artisan key:generate
+    - php artisan config:cache
     - vendor/bin/phpunit --coverage-text --colors=never
 
     # run laravel tests
