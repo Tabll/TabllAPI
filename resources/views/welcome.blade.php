@@ -86,6 +86,7 @@
 
                 <div class="links">
                     <a href="https://www.tabll.cn">主页</a>
+                    <a href="https://api.tabll.cn/docs">文档</a>
                     <a href="https://gitlab.tabll.cn">Gitlab</a>
                 </div>
             </div>
