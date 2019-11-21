@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "binarytorch/larecipe": "^2.2",
         "dingo/api": "^2.4",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
@@ -65,7 +66,7 @@
     "repositories": {
         "packagist": {
             "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
+            "url": "https://packagist.mirrors.sjtug.sjtu.edu.cn"
         }
     }
 }
