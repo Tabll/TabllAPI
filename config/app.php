@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'PRC',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,6 +165,8 @@ return [
         /*
          * Package Service Providers...
          */
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -175,6 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        App\Providers\ResponseMacroServiceProvider::class,
     ],
 
     /*
@@ -226,6 +229,33 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Debug 黑名单
+    |--------------------------------------------------------------------------
+    |
+    | 当一个异常未被捕获并且 APP_DEBUG 环境变量为 true 时，调试页面会显示所有的环境变量和内容
+    | 这里是调试页面显示的黑名单
+    |
+    */
+
+
+    'debug_blacklist' => [
+        '_ENV' => [
+            'APP_KEY',
+            'DB_PASSWORD',
+        ],
+
+        '_SERVER' => [
+            'APP_KEY',
+            'DB_PASSWORD',
+        ],
+
+        '_POST' => [
+            'password',
+        ],
     ],
 
 ];
