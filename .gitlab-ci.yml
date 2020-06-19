@@ -69,7 +69,7 @@ deploy to production:
   script:
     - cd \
     - cd TabllAPI
-    - git pull
+    - git pull origin master
     - git checkout $env:ProductionBranch
     - composer install
     - php artisan config:clear
