@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Api\Info;
 
 use App\Http\Controllers\Controller;

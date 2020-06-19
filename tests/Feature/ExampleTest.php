@@ -14,9 +14,10 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
+//        $this->markTestSkipped('错误待解决');
         $response = $this->get('/');
 
-        //$response->assertStatus(200);
-        $this->assertTrue(true);
+        $response->assertStatus(200);
+        //$this->assertTrue(true);
     }
 }
