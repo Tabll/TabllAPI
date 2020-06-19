@@ -20,7 +20,7 @@ class MapController extends Controller
     {
         $type = $request->input('type');
         if ($type == "bd-to-gd") {
-            $result = $mapService->gdToBd($request->input('lon'), $request->input('lat'));
+            $result = $mapService->bdToGd($request->input('lon'), $request->input('lat'));
         } else {
             $result = $mapService->gdToBd($request->input('lon'), $request->input('lat'));
         }
