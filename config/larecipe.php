@@ -37,7 +37,8 @@ return [
         'published' => [
             '1.0',
             '文档',
-            '笔记'
+            '笔记',
+            '日志'
         ]
     ],
 
@@ -78,8 +79,8 @@ return [
     */
 
     'cache'       => [
-        'enabled' => false,
-        'period'  => 5
+        'enabled' => true,
+        'period'  => 30
     ],
 
     /*
@@ -96,11 +97,11 @@ return [
     */
 
     'search'            => [
-        'enabled'       => false,
-        'default'       => 'algolia',
+        'enabled'       => true,
+        'default'       => 'internal',
         'engines'       => [
             'internal'  => [
-                'index' => ['h2', 'h3']
+                'index' => ['h2', 'h3', 'h4']
             ],
             'algolia'   => [
                 'key'   => '',

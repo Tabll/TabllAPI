@@ -26,9 +26,9 @@ class ResponseJson implements Responsable
         $this->result = $responseContent;
     }
 
-    public static function create($responseCode, $responseMessage)
+    public static function create($responseCode, $responseMessage, $responseContent = '')
     {
-        return new static('', $responseCode, $responseMessage);
+        return new static($responseContent, $responseCode, $responseMessage);
     }
 
     /**
