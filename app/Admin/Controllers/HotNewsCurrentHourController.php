@@ -6,31 +6,41 @@ use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsCurrentHour;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
+use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
 use Dcat\Admin\Controllers\AdminController;
 
 class HotNewsCurrentHourController extends AdminController
 {
-    /**
-     * Make a grid builder.
-     *
-     * @return Grid
-     */
+
+    public function index(Content $content)
+    {
+        return $content
+            ->header('热搜小时')
+            ->description('Hot News Recent Hours Info')
+            ->body($this->grid());
+    }
+
     protected function grid()
     {
-        return Grid::make(new HotNewsCurrentHour(), function (Grid $grid) {
+        return Grid::make(new HotNewsCurrentHour('labels'), function (Grid $grid) {
+            $grid->setActionClass(Grid\Displayers\ContextMenuActions ::class);
             $grid->quickSearch('content')->auto(false);
+            $grid->disableDeleteButton();
+            $grid->disableEditButton();
+            $grid->disableViewButton();
+            $grid->showQuickEditButton();
+            $grid->disableBatchDelete();
             $grid->export();
-
-            $grid->disableActions();
 
             $grid->id->hide();
             $grid->uuid->label('primary');
-            $grid->connecter->responsive()
+            $grid->column('connecter', '相关')->responsive()
                 ->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrentHour::class]));
             $grid->rank;
             $grid->content;
+            $grid->labels->pluck('label')->label();
             $grid->source->responsive()->filter(
                 Grid\Column\Filter\In::make([
                     'w' => '微博',
@@ -78,14 +88,21 @@ class HotNewsCurrentHourController extends AdminController
      */
     protected function form()
     {
-        return Form::make(new HotNewsCurrentHour(), function (Form $form) {
+        return Form::make(new HotNewsCurrentHour('labels'), function (Form $form) {
             $form->display('id');
-            $form->text('rank');
-            $form->text('content');
-            $form->text('source');
-            $form->text('heat');
-            $form->text('uuid');
-            $form->text('update_time');
+            $form->display('rank');
+            $form->display('content');
+            $form->display('source');
+            $form->display('heat');
+            $form->display('uuid');
+            $form->display('update_time');
+
+            $form->hasMany('labels', '标签', function (Form\NestedForm $form) {
+                $form->select('label', '标签')->options([
+                    '测试' => '测试',
+                    '综艺' => '综艺',
+                ]);
+            })->useTable();
         });
     }
 }

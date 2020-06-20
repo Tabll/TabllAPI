@@ -6,30 +6,40 @@ use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsHistory;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
+use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
 use Dcat\Admin\Controllers\AdminController;
 
 class HotNewsHistoryController extends AdminController
 {
-    /**
-     * Make a grid builder.
-     *
-     * @return Grid
-     */
+    public function index(Content $content)
+    {
+        return $content
+            ->header('热搜历史')
+            ->description('Hot News Histories')
+            ->body($this->grid());
+    }
+
     protected function grid()
     {
-        return Grid::make(new HotNewsHistory(), function (Grid $grid) {
+        return Grid::make(new HotNewsHistory('labels'), function (Grid $grid) {
+            $grid->setActionClass(Grid\Displayers\ContextMenuActions ::class);
             $grid->quickSearch('content')->auto(false);
+            $grid->disableDeleteButton();
+            $grid->disableViewButton();
+            $grid->disableEditButton();
+            $grid->showQuickEditButton();
+            $grid->disableBatchDelete();
             $grid->export();
-            $grid->disableActions();
 
             $grid->id->hide();
             $grid->uuid->label('primary');
-            $grid->connecter->responsive()
+            $grid->column('connecter', '相关')->responsive()
                 ->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsHistory::class]));
             $grid->content;
             $grid->heat->sortable();
+            $grid->labels->pluck('label')->label();
             $grid->source->responsive()->filter(
                 Grid\Column\Filter\In::make([
                     'w' => '微博',
@@ -75,13 +85,20 @@ class HotNewsHistoryController extends AdminController
      */
     protected function form()
     {
-        return Form::make(new HotNewsHistory(), function (Form $form) {
+        return Form::make(new HotNewsHistory('labels'), function (Form $form) {
             $form->display('id');
-            $form->text('uuid');
-            $form->text('content');
-            $form->text('heat');
-            $form->text('source');
-            $form->text('calculate_time');
+            $form->display('uuid');
+            $form->display('content');
+            $form->display('heat');
+            $form->display('source');
+            $form->display('calculate_time');
+
+            $form->hasMany('labels', '标签', function (Form\NestedForm $form) {
+                $form->select('label', '标签')->options([
+                    '测试' => '测试',
+                    '综艺' => '综艺',
+                ]);
+            })->useTable();
         });
     }
 }

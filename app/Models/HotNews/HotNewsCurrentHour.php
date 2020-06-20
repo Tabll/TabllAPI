@@ -8,8 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class HotNewsCurrentHour extends Model
 {
-	use HasDateTimeFormatter;
+    use HasDateTimeFormatter;
 
     protected $table = 'hot_news_current_hour';
     public $timestamps = false;
+
+    public function labels()
+    {
+        return $this->hasMany(HotNewsLabels::class, 'uuid', 'uuid');
+    }
 }

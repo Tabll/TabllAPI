@@ -2,12 +2,15 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Cards\CalendarGoalCard;
+use App\Admin\Cards\CalenderDonutCard;
 use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsCurrent;
 use App\Models\HotNews\HotNewsCurrentHour;
 use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
+use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
 use Dcat\Admin\Controllers\AdminController;
 use Dcat\Admin\Widgets\Card;
@@ -15,27 +18,37 @@ use function Clue\StreamFilter\fun;
 
 class HotNewsCurrentController extends AdminController
 {
-    /**
-     * Make a grid builder.
-     *
-     * @return Grid
-     */
+
+    public function index(Content $content)
+    {
+        return $content
+            ->header('当前热搜')
+            ->description('Current Hot News')
+            ->body($this->grid());
+    }
+
     protected function grid()
     {
         Admin::style('.tab-content .da-box{margin-bottom:0}');
-        return Grid::make(new HotNewsCurrent(), function (Grid $grid) {
+        return Grid::make(new HotNewsCurrent('labels'), function (Grid $grid) {
+            $grid->setActionClass(Grid\Displayers\ContextMenuActions ::class);
             $grid->quickSearch('content')->auto(false);
+            $grid->disableDeleteButton();
+            $grid->disableEditButton();
+            $grid->disableViewButton();
+            $grid->showQuickEditButton();
+            $grid->disableBatchDelete();
             $grid->export();
-            $grid->disableActions();
-            $grid->model()->orderBy('rank');
 
+            $grid->model()->orderBy('rank');
             $grid->id->hide();
             $grid->uuid->responsive()->label('primary');
-            $grid->connecter->responsive()
+            $grid->column('connecter', '相关')->responsive()
                 ->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrent::class]));
             $grid->rank->responsive()->sortable();
             $grid->content;
+            $grid->labels->pluck('label')->label();
             $grid->source->responsive()->filter(
                 Grid\Column\Filter\In::make([
                     'w' => '微博',
@@ -83,14 +96,21 @@ class HotNewsCurrentController extends AdminController
      */
     protected function form()
     {
-        return Form::make(new HotNewsCurrent(), function (Form $form) {
+        return Form::make(new HotNewsCurrent('labels'), function (Form $form) {
             $form->display('id');
-            $form->text('rank');
-            $form->text('content');
-            $form->text('source');
-            $form->text('heat');
-            $form->text('uuid');
-            $form->datetime('update_time');
+            $form->display('rank');
+            $form->display('content');
+            $form->display('source');
+            $form->display('heat');
+            $form->display('uuid');
+            $form->display('update_time');
+
+            $form->hasMany('labels', '标签', function (Form\NestedForm $form) {
+                $form->select('label', '标签')->options([
+                    '测试' => '测试',
+                    '综艺' => '综艺',
+                ]);
+            })->useTable();
         });
     }
 }
