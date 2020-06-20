@@ -2,12 +2,16 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsCurrent;
+use App\Models\HotNews\HotNewsCurrentHour;
 use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Controllers\AdminController;
+use Dcat\Admin\Widgets\Card;
+use function Clue\StreamFilter\fun;
 
 class HotNewsCurrentController extends AdminController
 {
@@ -27,6 +31,9 @@ class HotNewsCurrentController extends AdminController
 
             $grid->id->hide();
             $grid->uuid->responsive()->label('primary');
+            $grid->connecter->responsive()
+                ->label('primary')
+                ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrent::class]));
             $grid->rank->responsive()->sortable();
             $grid->content;
             $grid->source->responsive()->filter(

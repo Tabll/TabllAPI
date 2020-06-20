@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsHistory;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
@@ -24,6 +25,9 @@ class HotNewsHistoryController extends AdminController
 
             $grid->id->hide();
             $grid->uuid->label('primary');
+            $grid->connecter->responsive()
+                ->label('primary')
+                ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsHistory::class]));
             $grid->content;
             $grid->heat->sortable();
             $grid->source->responsive()->filter(

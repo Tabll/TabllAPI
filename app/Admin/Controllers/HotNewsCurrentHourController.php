@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsCurrentHour;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
@@ -25,6 +26,9 @@ class HotNewsCurrentHourController extends AdminController
 
             $grid->id->hide();
             $grid->uuid->label('primary');
+            $grid->connecter->responsive()
+                ->label('primary')
+                ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrentHour::class]));
             $grid->rank;
             $grid->content;
             $grid->source->responsive()->filter(
