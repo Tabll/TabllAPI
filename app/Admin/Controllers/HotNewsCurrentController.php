@@ -7,6 +7,7 @@ use App\Admin\Cards\CalenderDonutCard;
 use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsCurrent;
 use App\Models\HotNews\HotNewsCurrentHour;
+use App\Models\HotNews\HotNewsLabels;
 use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
@@ -43,22 +44,14 @@ class HotNewsCurrentController extends AdminController
             $grid->model()->orderBy('rank');
             $grid->id->hide();
             $grid->uuid->responsive()->label('primary');
-            $grid->column('connecter', '相关')->responsive()
-                ->label('primary')
+            $grid->column('connecter', '相关')->responsive()->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrent::class]));
             $grid->rank->responsive()->sortable();
             $grid->content;
             $grid->labels->pluck('label')->label();
             $grid->source->responsive()->filter(
-                Grid\Column\Filter\In::make([
-                    'w' => '微博',
-                    'z' => '知乎',
-                ])
-            )->using(['w' => '微博', 'z' => '知乎', 'default' => '未知'])->label([
-                'w' => 'danger',
-                'z' => 'success',
-                'default' => 'primary',
-            ]);
+                Grid\Column\Filter\In::make(HotNewsLabels::$source)
+            )->using(HotNewsLabels::$source)->label(HotNewsLabels::$sourceColor);
             $grid->heat->responsive();
             $grid->update_time->responsive();
 
@@ -106,10 +99,7 @@ class HotNewsCurrentController extends AdminController
             $form->display('update_time');
 
             $form->hasMany('labels', '标签', function (Form\NestedForm $form) {
-                $form->select('label', '标签')->options([
-                    '测试' => '测试',
-                    '综艺' => '综艺',
-                ]);
+                $form->select('label', '标签')->options(HotNewsLabels::$labels);
             })->useTable();
         });
     }

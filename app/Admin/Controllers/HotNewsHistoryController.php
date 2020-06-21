@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Metrics\Render\HotNewsHistoryRender;
 use App\Admin\Repositories\HotNewsHistory;
+use App\Models\HotNews\HotNewsLabels;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Layout\Content;
@@ -41,15 +42,8 @@ class HotNewsHistoryController extends AdminController
             $grid->heat->sortable();
             $grid->labels->pluck('label')->label();
             $grid->source->responsive()->filter(
-                Grid\Column\Filter\In::make([
-                    'w' => '微博',
-                    'z' => '知乎',
-                ])
-            )->using(['w' => '微博', 'z' => '知乎', 'default' => '未知'])->label([
-                'w' => 'danger',
-                'z' => 'success',
-                'default' => 'primary',
-            ]);
+                Grid\Column\Filter\In::make(HotNewsLabels::$source)
+            )->using(HotNewsLabels::$source)->label(HotNewsLabels::$sourceColor);
             $grid->calculate_time->sortable();
 
             $grid->filter(function (Grid\Filter $filter) {
@@ -59,13 +53,6 @@ class HotNewsHistoryController extends AdminController
         });
     }
 
-    /**
-     * Make a show builder.
-     *
-     * @param mixed $id
-     *
-     * @return Show
-     */
     protected function detail($id)
     {
         return Show::make($id, new HotNewsHistory(), function (Show $show) {
@@ -78,11 +65,6 @@ class HotNewsHistoryController extends AdminController
         });
     }
 
-    /**
-     * Make a form builder.
-     *
-     * @return Form
-     */
     protected function form()
     {
         return Form::make(new HotNewsHistory('labels'), function (Form $form) {
@@ -92,12 +74,8 @@ class HotNewsHistoryController extends AdminController
             $form->display('heat');
             $form->display('source');
             $form->display('calculate_time');
-
             $form->hasMany('labels', '标签', function (Form\NestedForm $form) {
-                $form->select('label', '标签')->options([
-                    '测试' => '测试',
-                    '综艺' => '综艺',
-                ]);
+                $form->select('label', '标签')->options(HotNewsLabels::$labels);
             })->useTable();
         });
     }
