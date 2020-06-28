@@ -24,3 +24,6 @@ use Dcat\Admin\Show;
  * Admin::js('/packages/prettydocs/js/main.js');
  *
  */
+
+Admin::asset()->alias('@nunito', null, '');
+Admin::asset()->alias('@montserrat', null, '');
