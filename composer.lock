@@ -383,16 +383,16 @@
         },
         {
             "name": "dcat/laravel-admin",
-            "version": "1.5.2",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jqhph/dcat-admin.git",
-                "reference": "1cd5236fb42b63bac5e1c598cacd36dd955963b1"
+                "reference": "6df8844cb25e924d679f112b0972ee5eea463384"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jqhph/dcat-admin/zipball/1cd5236fb42b63bac5e1c598cacd36dd955963b1",
-                "reference": "1cd5236fb42b63bac5e1c598cacd36dd955963b1",
+                "url": "https://api.github.com/repos/jqhph/dcat-admin/zipball/6df8844cb25e924d679f112b0972ee5eea463384",
+                "reference": "6df8844cb25e924d679f112b0972ee5eea463384",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -451,7 +451,7 @@
                 "laravel",
                 "laravel admin"
             ],
-            "time": "2020-06-21T13:08:02+00:00"
+            "time": "2020-06-28T14:04:29+00:00"
         },
         {
             "name": "dingo/api",
@@ -8087,16 +8087,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.9.5",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef"
+                "reference": "5796d127b0c4ff505b77455148ea9d5269d99758"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/b2c28789e80a97badd14145fda39b545d83ca3ef",
-                "reference": "b2c28789e80a97badd14145fda39b545d83ca3ef",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/5796d127b0c4ff505b77455148ea9d5269d99758",
+                "reference": "5796d127b0c4ff505b77455148ea9d5269d99758",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -8106,7 +8106,7 @@
                 ]
             },
             "require": {
-                "php": "^7.1"
+                "php": "^7.1 || ^8.0"
             },
             "replace": {
                 "myclabs/deep-copy": "self.version"
@@ -8137,7 +8137,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2020-01-17T21:11:47+00:00"
+            "time": "2020-06-28T07:02:41+00:00"
         },
         {
             "name": "nunomaduro/collision",
