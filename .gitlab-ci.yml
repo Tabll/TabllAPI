@@ -75,5 +75,6 @@ deploy to production:
     - php artisan config:clear
     - php artisan migrate --no-interaction --force
     - php artisan cache:clear
+    - npm install
 
   when: manual
