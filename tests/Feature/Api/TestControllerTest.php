@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Tools\ResponseJson;
+use Mail;
 use Tests\TestCase;
 
 /**
@@ -48,6 +49,27 @@ class TestControllerTest extends TestCase
     public function testGetStringLength()
     {
         $response = $this->get('api/test/string/length');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'code' => ResponseJson::RESPONSE_CODE,
+                'message' => ResponseJson::RESPONSE_MESSAGE,
+            ]);
+    }
+
+    /**
+     * 测试邮件发送
+     *
+     * @covers ::sendTestMail
+     * @return void
+     */
+    public function testSendTestEmail()
+    {
+        Mail::fake();
+
+        $response = $this->json('GET', 'api/test/send/mail', [
+            'address' => '905153840@qq.com'
+        ]);
 
         $response->assertStatus(200)
             ->assertJson([

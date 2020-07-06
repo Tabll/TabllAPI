@@ -6,10 +6,12 @@ namespace App\Http\Controllers\Api\Test;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Test\GetPasswordRequest;
 use App\Http\Requests\Test\GetStringLengthRequest;
+use App\Http\Requests\Test\SendTestEmailRequest;
 use App\Resources\Tools\InfoResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Mail;
 
 class TestController extends Controller
 {
@@ -54,8 +56,26 @@ class TestController extends Controller
         ]);
     }
 
-    public function sendTestMail()
+    /**
+     * @api 发送测试邮件
+     *
+     * @param  SendTestEmailRequest  $request
+     *
+     * @return mixed
+     */
+    public function sendTestMail(SendTestEmailRequest $request)
     {
+        $address = $request->input('address');
+        $name = $request->input('name', $address);
+        try {
+            Mail::send('emails.test', ['name' => $name], function ($message) use ($address) {
+                $to = $address;
+                $message->to($to)->subject('邮件测试');
+            });
+        } catch (\Exception $exception) {
+            return response()->error();
+        }
 
+        return response()->success();
     }
 }
