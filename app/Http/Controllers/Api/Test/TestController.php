@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Test\GetPasswordRequest;
 use App\Http\Requests\Test\GetStringLengthRequest;
 use App\Http\Requests\Test\SendTestEmailRequest;
+use App\Models\Common\SMSMessage;
+use App\Models\Tools\SMS;
 use App\Resources\Tools\InfoResource;
 
 use Illuminate\Http\Request;
@@ -15,9 +17,23 @@ use Mail;
 
 class TestController extends Controller
 {
+
+    /**
+     * @api 发送测试短信
+     *
+     * @param  Request  $request
+     *
+     * @return mixed
+     */
     public function sendSMS(Request $request)
     {
-        return new InfoResource('');
+        $mobile = $request->input('mobile', SMSMessage::ADMIN_MOBILE);
+        $content = $request->input('content', SMSMessage::TEST);
+
+        $sms = new SMS();
+        $sms->sendSMS($mobile, $content);
+
+        return response()->success();
     }
 
     /**

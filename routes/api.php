@@ -37,6 +37,7 @@ $api->version('v1', function ($api) {
     $api->get('/test/password', 'App\Http\Controllers\Api\Test\TestController@getPassword');
     $api->get('/test/string/length', 'App\Http\Controllers\Api\Test\TestController@getStringLength');
     $api->get('/test/send/mail', 'App\Http\Controllers\Api\Test\TestController@sendTestMail');
+    $api->get('/test/send/sms', 'App\Http\Controllers\Api\Test\TestController@sendSMS');
 
     $api->get('/calender/simple', 'App\Http\Controllers\Api\Tools\CalenderController@getSimpleHoliday');
     $api->get('/calender', 'App\Http\Controllers\Api\Tools\CalenderController@getHoliday');

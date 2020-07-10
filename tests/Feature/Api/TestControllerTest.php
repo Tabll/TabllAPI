@@ -77,4 +77,21 @@ class TestControllerTest extends TestCase
                 'message' => ResponseJson::RESPONSE_MESSAGE,
             ]);
     }
+
+    /**
+     * 测试短信发送
+     *
+     * @covers ::sendSMS
+     * @return void
+     */
+    public function testSendSMS()
+    {
+        $response = $this->json('GET', 'api/test/send/sms');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'code' => ResponseJson::RESPONSE_CODE,
+                'message' => ResponseJson::RESPONSE_MESSAGE,
+            ]);
+    }
 }
