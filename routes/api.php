@@ -44,5 +44,7 @@ $api->version('v1', function ($api) {
 
     $api->get('/one-word', 'App\Http\Controllers\Api\Tools\OneWordController@getOneWord');
 
+    $api->get('/hot-news/current', 'App\Http\Controllers\Api\HotNews\HotNewsController@index');
+
     $api->get('/tool/map/convert', 'App\Http\Controllers\Api\Tools\MapController@convert');
 });
