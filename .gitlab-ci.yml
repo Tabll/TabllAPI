@@ -32,12 +32,10 @@ test:
   stage: testing
   tags:
     - test
-
   cache:
     paths:
       - vendor/
       - node_modules/
-
   script:
     # - ~/.composer/vendor/bin/phpcs --error-severity=1 --warning-severity=8 --extensions=php
     - cp .env.test .env
@@ -51,21 +49,32 @@ test:
 #    - vendor/bin/phpunit --coverage-text --colors=never
     - vendor/bin/paratest --coverage-text tests
 
-#  only:
-#    refs:
-#      - develop
+code_quality:
+  stage: testing
+  tags:
+    - quality
+  image: docker:18.09
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  script:
+  - VOLUME_PATH=/tmp/builds"$(echo $PWD | sed 's|^/[^/]*||')"
+# 校验配置文件是否正常
+#  - docker run --rm -v /tmp/cc:/tmp/cc -v $VOLUME_PATH:/code -v /var/run/docker.sock:/var/run/docker.sock codeclimate/codeclimate:0.85.11 validate-config
+  - docker run --rm --env CODECLIMATE_CODE="$VOLUME_PATH" -v /tmp/cc:/tmp/cc -v $VOLUME_PATH:/code -v /var/run/docker.sock:/var/run/docker.sock codeclimate/codeclimate:0.85.11 analyze -f json > codeclimate.json || true
+  artifacts:
+    reports:
+      codequality: codeclimate.json
 
 # 部署至生产环境
 deploy to production:
   stage: production
-
   tags:
     - production
-
+  allow_failure: true
   before_script:
 #    解决 Windows 乱码
     - chcp 65001
-
   script:
     - cd \
     - cd TabllAPI
@@ -75,5 +84,7 @@ deploy to production:
     - php artisan config:clear
     - php artisan migrate --no-interaction --force
     - php artisan cache:clear
-
   when: manual
+  only:
+    refs:
+      - master
