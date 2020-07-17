@@ -4,6 +4,7 @@ variables:
 
 stages:
   - testing
+  - quality
   - production
 
   # Update packages
@@ -50,7 +51,7 @@ test:
     - vendor/bin/paratest --coverage-text tests
 
 code_quality:
-  stage: testing
+  stage: quality
   tags:
     - quality
   image: docker:18.09
@@ -65,6 +66,18 @@ code_quality:
   artifacts:
     reports:
       codequality: codeclimate.json
+
+sast:
+  stage: quality
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
+  tags:
+    - quality
+  allow_failure: true
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      sast: "gl-sast-report.json"
 
 # 部署至生产环境
 deploy to production:
