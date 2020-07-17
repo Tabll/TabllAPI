@@ -5,6 +5,7 @@ variables:
 stages:
   - testing
   - quality
+  - security
   - production
 
   # Update packages
@@ -68,7 +69,7 @@ code_quality:
       codequality: codeclimate.json
 
 sast:
-  stage: quality
+  stage: security
   image: registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
   tags:
     - quality
@@ -80,7 +81,7 @@ sast:
       sast: "gl-sast-report.json"
 
 dependency_scan:
-  stage: quality
+  stage: security
   image: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
   tags:
     - quality
@@ -90,6 +91,18 @@ dependency_scan:
   artifacts:
     reports:
       dependency_scanning: "gl-dependency-scanning-report.json"
+
+secret_detection:
+  stage: security
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
+  tags:
+    - quality
+  allow_failure: true
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      secret_detection: gl-secret-detection-report.json
 
 # 部署至生产环境
 deploy to production:
