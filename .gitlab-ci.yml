@@ -79,6 +79,18 @@ sast:
     reports:
       sast: "gl-sast-report.json"
 
+dependency_scan:
+  stage: quality
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
+  tags:
+    - quality
+  allow_failure: true
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      dependency_scanning: "gl-dependency-scanning-report.json"
+
 # 部署至生产环境
 deploy to production:
   stage: production
