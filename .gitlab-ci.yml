@@ -134,7 +134,35 @@ deploy to production:
     - php artisan config:clear
     - php artisan migrate --no-interaction --force
     - php artisan cache:clear
+  environment:
+    name: production
+    url: https://api.tabll.cn
   when: manual
   only:
     refs:
       - master
+
+
+# 部署至测试环境
+deploy_to_test:
+  stage: production
+  tags:
+    - production
+  allow_failure: true
+  before_script:
+    - chcp 65001
+  script:
+    - cd \
+    - cd TabllAPITest
+    - git pull
+    - composer install
+    - php artisan config:clear
+    - php artisan migrate --no-interaction --force
+    - php artisan cache:clear
+  environment:
+    name: test
+    url: https://test.tabll.cn
+  when: manual
+  only:
+    refs:
+      - develop
