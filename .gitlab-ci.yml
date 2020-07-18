@@ -6,7 +6,8 @@ stages:
   - testing
   - quality
   - security
-  - production
+  - deploy
+  - dynamic security test
 
   # Update packages
   # - apt-get update -yqq
@@ -78,7 +79,7 @@ sast:
     - /analyzer run
   artifacts:
     reports:
-      sast: "gl-sast-report.json"
+      sast: gl-sast-report.json
 
 dependency_scan:
   stage: security
@@ -90,7 +91,7 @@ dependency_scan:
     - /analyzer run
   artifacts:
     reports:
-      dependency_scanning: "gl-dependency-scanning-report.json"
+      dependency_scanning: gl-dependency-scanning-report.json
 
 secret_detection:
   stage: security
@@ -118,7 +119,7 @@ license_scan:
 
 # 部署至生产环境
 deploy to production:
-  stage: production
+  stage: deploy
   tags:
     - production
   allow_failure: true
@@ -142,10 +143,9 @@ deploy to production:
     refs:
       - master
 
-
 # 部署至测试环境
 deploy_to_test:
-  stage: production
+  stage: deploy
   tags:
     - production
   allow_failure: true
@@ -166,3 +166,19 @@ deploy_to_test:
   only:
     refs:
       - develop
+
+dast:
+  stage: dynamic security test
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/dast:1
+  tags:
+    - quality
+  allow_failure: true
+  variables:
+    DAST_WEBSITE: https://test.tabll.cn
+    DAST_FULL_SCAN_ENABLED: "true"
+  script:
+    - /analyze
+  when: manual
+  artifacts:
+    reports:
+      dast: gl-dast-report.json
