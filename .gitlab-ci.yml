@@ -104,6 +104,18 @@ secret_detection:
     reports:
       secret_detection: gl-secret-detection-report.json
 
+license_scan:
+  stage: security
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3
+  tags:
+    - quality
+  allow_failure: true
+  script:
+    - /run.sh analyze .
+  artifacts:
+    reports:
+      license_scanning: gl-license-scanning-report.json
+
 # 部署至生产环境
 deploy to production:
   stage: production
