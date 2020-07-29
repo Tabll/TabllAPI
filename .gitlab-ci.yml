@@ -3,11 +3,11 @@ variables:
   MYSQL_ROOT_PASSWORD: secret
 
 stages:
-  - testing
   - quality
   - security
   - deploy
-  - dynamic security test
+  - performance
+  - dynamic test
 
   # Update packages
   # - apt-get update -yqq
@@ -31,8 +31,8 @@ stages:
   # Copy over testing configuration.
   # Don't forget to set the database config in .env.testing correctly
 
-test:
-  stage: testing
+unit_test:
+  stage: quality
   tags:
     - test
   cache:
@@ -80,6 +80,7 @@ sast:
   artifacts:
     reports:
       sast: gl-sast-report.json
+  needs: ["code_quality", "unit_test"]
 
 dependency_scan:
   stage: security
@@ -92,6 +93,7 @@ dependency_scan:
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
+  needs: ["code_quality", "unit_test"]
 
 secret_detection:
   stage: security
@@ -104,6 +106,7 @@ secret_detection:
   artifacts:
     reports:
       secret_detection: gl-secret-detection-report.json
+  needs: ["code_quality", "unit_test"]
 
 license_scan:
   stage: security
@@ -116,6 +119,7 @@ license_scan:
   artifacts:
     reports:
       license_scanning: gl-license-scanning-report.json
+  needs: ["code_quality", "unit_test"]
 
 # 部署至生产环境
 deploy to production:
@@ -168,7 +172,7 @@ deploy_to_test:
       - develop
 
 dast:
-  stage: dynamic security test
+  stage: dynamic test
   image: registry.gitlab.com/gitlab-org/security-products/analyzers/dast:1
   tags:
     - quality
@@ -182,3 +186,50 @@ dast:
   artifacts:
     reports:
       dast: gl-dast-report.json
+  needs: ["load_performance", "browser_performance"]
+
+load_performance:
+  stage: performance
+  tags:
+    - quality
+  image:
+    name: loadimpact/k6:0.26.2
+    entrypoint: [""]
+  allow_failure: true
+  variables:
+    K6_IMAGE: loadimpact/k6
+    K6_VERSION: 0.26.2
+    K6_TEST_FILE: test.tabll.cn/js/k6-test.js
+    K6_OPTIONS: ''
+  script:
+    - k6 run $K6_TEST_FILE --summary-export=load-performance.json
+  artifacts:
+    reports:
+      load_performance: "load-performance.json"
+  needs: ["sast", "license_scan", "secret_detection", "dependency_scan"]
+
+browser_performance:
+  stage: performance
+  image:
+    name: sitespeedio/sitespeed.io:13.3.0
+    entrypoint: [""]
+  tags:
+    - quality
+  allow_failure: true
+  variables:
+    URL: https://test.tabll.cn/
+    SITESPEED_VERSION: 13.3.0
+    SITESPEED_OPTIONS: ''
+    SITESPEED_IMAGE: sitespeedio/sitespeed.io
+  script:
+    - mkdir -p gitlab-exporter
+    - wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.0.1/index.js
+    - mkdir -p sitespeed-results
+    - /start.sh --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL -b chrome
+    - mv sitespeed-results/data/performance.json browser-performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      browser_performance: browser-performance.json
+  needs: ["sast", "license_scan", "secret_detection", "dependency_scan"]
