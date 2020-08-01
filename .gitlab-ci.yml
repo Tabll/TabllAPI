@@ -142,7 +142,6 @@ deploy to production:
   environment:
     name: production
     url: https://api.tabll.cn
-  when: manual
   only:
     refs:
       - master
@@ -166,7 +165,6 @@ deploy_to_test:
   environment:
     name: test
     url: https://test.tabll.cn
-  when: manual
   only:
     refs:
       - develop

@@ -17,7 +17,7 @@
 <larecipe-card shadow>
 
     <larecipe-badge type="success" circle class="mr-3" icon="fas fa-anchor"></larecipe-badge> 2020年进度：
-    <larecipe-progress type="success" :value="50"></larecipe-progress>
+    <larecipe-progress type="success" :value="60"></larecipe-progress>
 
 </larecipe-card>
 
@@ -28,4 +28,4 @@
 
 ---
 
-【最后更新：2020-7-3】 
+【最后更新：2020-8-1】 
