@@ -71,7 +71,7 @@ code_quality:
 
 sast:
   stage: security
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2
+  image: tabll/phpcs-security-audit:2
   tags:
     - quality
   allow_failure: true
@@ -84,7 +84,11 @@ sast:
 
 dependency_scan:
   stage: security
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/gemnasium:2
+  image: tabll/gemnasium
+  variables:
+    DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
+    SECURE_LOG_LEVEL: "debug"
+    GEMNASIUM_DB_REMOTE_URL: "https://github.com/Tabll/gemnasium-db.git"
   tags:
     - quality
   allow_failure: true
@@ -97,7 +101,7 @@ dependency_scan:
 
 secret_detection:
   stage: security
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3
+  image: tabll/secrets:3
   tags:
     - quality
   allow_failure: true
@@ -110,7 +114,7 @@ secret_detection:
 
 license_scan:
   stage: security
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/license-finder:3
+  image: tabll/license-finder:3
   tags:
     - quality
   allow_failure: true
@@ -133,12 +137,14 @@ deploy to production:
   script:
     - cd \
     - cd TabllAPI
+    - php artisan down
     - git pull origin master
     - git checkout $env:ProductionBranch
     - composer install
     - php artisan config:clear
     - php artisan migrate --no-interaction --force
     - php artisan cache:clear
+    - php artisan up
   environment:
     name: production
     url: https://api.tabll.cn
@@ -157,11 +163,13 @@ deploy_to_test:
   script:
     - cd \
     - cd TabllAPITest
+    - php artisan down
     - git pull
     - composer install
     - php artisan config:clear
     - php artisan migrate --no-interaction --force
     - php artisan cache:clear
+    - php artisan up
   environment:
     name: test
     url: https://test.tabll.cn
@@ -171,7 +179,7 @@ deploy_to_test:
 
 dast:
   stage: dynamic test
-  image: registry.gitlab.com/gitlab-org/security-products/analyzers/dast:1
+  image: tabll/dast:1
   tags:
     - quality
   allow_failure: true
@@ -221,7 +229,7 @@ browser_performance:
     SITESPEED_IMAGE: sitespeedio/sitespeed.io
   script:
     - mkdir -p gitlab-exporter
-    - wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/1.0.1/index.js
+    - wget -O gitlab-exporter/index.js https://tabll-1252262977.cos.ap-shanghai.myqcloud.com/job/gl-performance-1.0.1.js
     - mkdir -p sitespeed-results
     - /start.sh --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL -b chrome
     - mv sitespeed-results/data/performance.json browser-performance.json

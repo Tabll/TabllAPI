@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /*
@@ -19,32 +20,27 @@ Route::group(['Api/info'], function () {
     //Route::get('/info', 'InfoController@index');
 });
 
-$api = app('Dingo\Api\Routing\Router');
-$api->version('v1', ['middleware' => 'tab'], function ($api) {
-    $api->get('/info', 'App\Http\Controllers\Api\Info\InfoController@index');
+Route::middleware('tab')->get('/info', 'Api\Info\InfoController@index');
+
+
+Route::get('/test', function () {
+    return 'API running：' . Carbon::now();
 });
 
-$api->version('v1', function ($api) {
-    $api->get('/test', function () {
-        \Carbon\Carbon::now();
-        return 'API running：'.\Carbon\Carbon::now();
-    });
+Route::get('/monitor/database-sh', 'Api\Monitor\PublicMonitorController@databaseStatusTXSH');
+Route::get('/monitor/redis-sh', 'Api\Monitor\PublicMonitorController@redisStatusTXSH');
+Route::get('/monitor/redis-lo', 'Api\Monitor\PublicMonitorController@redisStatusTXLO');
 
-    $api->get('/monitor/database-sh', 'App\Http\Controllers\Api\Monitor\PublicMonitorController@databaseStatusTXSH');
-    $api->get('/monitor/redis-sh', 'App\Http\Controllers\Api\Monitor\PublicMonitorController@redisStatusTXSH');
-    $api->get('/monitor/redis-lo', 'App\Http\Controllers\Api\Monitor\PublicMonitorController@redisStatusTXLO');
+Route::get('/test/password', 'Api\Test\TestController@getPassword');
+Route::get('/test/string/length', 'Api\Test\TestController@getStringLength');
+Route::get('/test/send/mail', 'Api\Test\TestController@sendTestMail');
+Route::get('/test/send/sms', 'Api\Test\TestController@sendSMS');
 
-    $api->get('/test/password', 'App\Http\Controllers\Api\Test\TestController@getPassword');
-    $api->get('/test/string/length', 'App\Http\Controllers\Api\Test\TestController@getStringLength');
-    $api->get('/test/send/mail', 'App\Http\Controllers\Api\Test\TestController@sendTestMail');
-    $api->get('/test/send/sms', 'App\Http\Controllers\Api\Test\TestController@sendSMS');
+Route::get('/calender/simple', 'Api\Tools\CalenderController@getSimpleHoliday');
+Route::get('/calender', 'Api\Tools\CalenderController@getHoliday');
 
-    $api->get('/calender/simple', 'App\Http\Controllers\Api\Tools\CalenderController@getSimpleHoliday');
-    $api->get('/calender', 'App\Http\Controllers\Api\Tools\CalenderController@getHoliday');
+Route::get('/one-word', 'Api\Tools\OneWordController@getOneWord');
 
-    $api->get('/one-word', 'App\Http\Controllers\Api\Tools\OneWordController@getOneWord');
+Route::get('/hot-news/current', 'Api\HotNews\HotNewsController@index');
 
-    $api->get('/hot-news/current', 'App\Http\Controllers\Api\HotNews\HotNewsController@index');
-
-    $api->get('/tool/map/convert', 'App\Http\Controllers\Api\Tools\MapController@convert');
-});
+Route::get('/tool/map/convert', 'Api\Tools\MapController@convert');

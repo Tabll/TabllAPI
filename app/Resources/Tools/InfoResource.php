@@ -28,6 +28,7 @@ class InfoResource extends JsonResource
             'environment' => App::environment(),
             'version' => config('tabll.version'),
             'info_version' => App::version(),
+            'php_version' => phpversion(),
             'db_version' => $dbVersion,
             'redis_version' => $redisVersion,
         ];

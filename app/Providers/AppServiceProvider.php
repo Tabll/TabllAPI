@@ -31,20 +31,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        app('Dingo\Api\Exception\Handler')->register(function (ValidationException $validationException) {
-            $message = $validationException->validator->getMessageBag();
-            return response()->error(ErrorCode::ERROR_REQUEST, $message);
-        });
-
-        // 捕获 Dingo API 的错误
-        app('Dingo\Api\Exception\Handler')->register(function (\Exception $exception) {
-
-            // 其它错误
-            if ($exception instanceof Exception) {
-                if (App::environment('production')) {
-                    return response()->error(ErrorCode::UN_NO_ERROR, ErrorCode::UN_NO_ERROR_MSG);
-                }
-            }
-        });
     }
 }
