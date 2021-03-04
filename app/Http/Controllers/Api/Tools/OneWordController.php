@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Tools;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tools\OneWord;
-use App\Resources\Tools\OneWordResource;
+use App\Http\Resources\Tools\OneWordResource;
 use DB;
 
 class OneWordController extends Controller

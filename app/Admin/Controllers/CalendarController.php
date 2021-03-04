@@ -10,7 +10,7 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
-use Dcat\Admin\Controllers\AdminController;
+use Dcat\Admin\Http\Controllers\AdminController;
 
 class CalendarController extends AdminController
 {
@@ -39,15 +39,15 @@ class CalendarController extends AdminController
             $grid->quickSearch('name')->auto(true);
             $grid->export();
 
-            $grid->id->sortable()->responsive();
-            $grid->type->responsive()->help('区分节假日和调休')->filter(
+            $grid->id->sortable();
+            $grid->type->help('区分节假日和调休')->filter(
                 Grid\Column\Filter\In::make([
                     1 => '节假日',
                     2 => '调休',
                 ])
             )->using([1 => '节假日', 2 => '调休']);
-            $grid->region->responsive()->using(['CN' => '中国'])->help('暂时只支持中国');
-            $grid->name->responsive()->filter(
+            $grid->region->using(['CN' => '中国'])->help('暂时只支持中国');
+            $grid->name->filter(
                 Grid\Column\Filter\Equal::make()->valueFilter()
             );
             $grid->year->filter(

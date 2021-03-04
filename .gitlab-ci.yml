@@ -34,11 +34,13 @@ stages:
 unit_test:
   stage: quality
   tags:
-    - test
+    - shell
   cache:
     paths:
       - vendor/
       - node_modules/
+  before_script:
+    - export XDEBUG_MODE=coverage
   script:
     # - ~/.composer/vendor/bin/phpcs --error-severity=1 --warning-severity=8 --extensions=php
     - cp .env.test .env
@@ -49,13 +51,13 @@ unit_test:
     - php artisan config:cache
     - php artisan cache:clear
     - php artisan migrate
-#    - vendor/bin/phpunit --coverage-text --colors=never
-    - vendor/bin/paratest --coverage-text tests
+    - vendor/bin/phpunit --coverage-text --colors=never
+#    - vendor/bin/paratest --coverage-text tests
 
 code_quality:
   stage: quality
   tags:
-    - quality
+    - docker
   image: docker:18.09
   variables:
     DOCKER_DRIVER: overlay2
@@ -73,7 +75,7 @@ sast:
   stage: security
   image: tabll/phpcs-security-audit:2
   tags:
-    - quality
+    - docker
   allow_failure: true
   script:
     - /analyzer run
@@ -90,7 +92,7 @@ dependency_scan:
     SECURE_LOG_LEVEL: "debug"
     GEMNASIUM_DB_REMOTE_URL: "https://github.com/Tabll/gemnasium-db.git"
   tags:
-    - quality
+    - docker
   allow_failure: true
   script:
     - /analyzer run
@@ -103,7 +105,7 @@ secret_detection:
   stage: security
   image: tabll/secrets:3
   tags:
-    - quality
+    - docker
   allow_failure: true
   script:
     - /analyzer run
@@ -116,7 +118,7 @@ license_scan:
   stage: security
   image: tabll/license-finder:3
   tags:
-    - quality
+    - docker
   allow_failure: true
   script:
     - /run.sh analyze .
@@ -181,7 +183,7 @@ dast:
   stage: dynamic test
   image: tabll/dast:1
   tags:
-    - quality
+    - docker
   allow_failure: true
   variables:
     DAST_WEBSITE: https://test.tabll.cn
@@ -197,7 +199,7 @@ dast:
 load_performance:
   stage: performance
   tags:
-    - quality
+    - docker
   image:
     name: loadimpact/k6:0.26.2
     entrypoint: [""]
@@ -220,7 +222,7 @@ browser_performance:
     name: sitespeedio/sitespeed.io:13.3.0
     entrypoint: [""]
   tags:
-    - quality
+    - docker
   allow_failure: true
   variables:
     URL: https://test.tabll.cn/

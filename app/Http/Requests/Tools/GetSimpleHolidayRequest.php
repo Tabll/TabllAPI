@@ -6,7 +6,7 @@ use App\Http\Requests\BaseRequest;
 
 class GetSimpleHolidayRequest extends BaseRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'type' => 'nullable|integer|in:1',

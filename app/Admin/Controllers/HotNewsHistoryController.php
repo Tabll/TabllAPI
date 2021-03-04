@@ -9,7 +9,7 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
-use Dcat\Admin\Controllers\AdminController;
+use Dcat\Admin\Http\Controllers\AdminController;
 
 class HotNewsHistoryController extends AdminController
 {
@@ -35,13 +35,13 @@ class HotNewsHistoryController extends AdminController
 
             $grid->id->hide();
             $grid->uuid->label('primary');
-            $grid->column('connecter', '相关')->responsive()
+            $grid->column('connecter', '相关')
                 ->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsHistory::class]));
             $grid->content;
             $grid->heat->sortable();
             $grid->labels->pluck('label')->label();
-            $grid->source->responsive()->filter(
+            $grid->source->filter(
                 Grid\Column\Filter\In::make(HotNewsLabels::$source)
             )->using(HotNewsLabels::$source)->label(HotNewsLabels::$sourceColor);
             $grid->calculate_time->sortable();

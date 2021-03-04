@@ -9,7 +9,7 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
-use Dcat\Admin\Controllers\AdminController;
+use Dcat\Admin\Http\Controllers\AdminController;
 
 class HotNewsCurrentHourController extends AdminController
 {
@@ -36,12 +36,12 @@ class HotNewsCurrentHourController extends AdminController
 
             $grid->id->hide();
             $grid->uuid->label('primary');
-            $grid->column('connecter', '相关')->responsive()->label('primary')
+            $grid->column('connecter', '相关')->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrentHour::class]));
             $grid->rank;
             $grid->content;
             $grid->labels->pluck('label')->label();
-            $grid->source->responsive()->filter(
+            $grid->source->filter(
                 Grid\Column\Filter\In::make(HotNewsLabels::$source)
             )->using(HotNewsLabels::$source)->label(HotNewsLabels::$sourceColor);
             $grid->heat;

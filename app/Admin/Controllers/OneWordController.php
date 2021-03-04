@@ -7,7 +7,7 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
-use Dcat\Admin\Controllers\AdminController;
+use Dcat\Admin\Http\Controllers\AdminController;
 
 class OneWordController extends AdminController
 {
@@ -32,14 +32,14 @@ class OneWordController extends AdminController
             $grid->quickSearch('word')->auto(true);
             $grid->export();
 
-            $grid->id->sortable()->responsive();
-            $grid->word->responsive();
-            $grid->from->responsive()->filter(
+            $grid->id->sortable();
+            $grid->word;
+            $grid->from->filter(
                 Grid\Column\Filter\Equal::make()->valueFilter()
             );
-            $grid->type->responsive()->using([1 => '通常']);
-            $grid->created_at->sortable()->responsive();
-            $grid->updated_at->sortable()->responsive();
+            $grid->type->using([1 => '通常']);
+            $grid->created_at->sortable();
+            $grid->updated_at->sortable();
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');

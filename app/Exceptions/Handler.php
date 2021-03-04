@@ -18,7 +18,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        ValidationException::class,
+        //
     ];
 
     /**
@@ -42,7 +42,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         // 报告异常给 Sentry
-        if (app()->bound('sentry') && $this->shouldReport($exception)) {
+        if ($this->shouldReport($exception) && app()->bound('sentry')) {
             app('sentry')->captureException($exception);
         }
 
@@ -60,6 +60,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // 表单验证失败
+        if ($exception instanceof ValidationException) {
+            $errors = $exception->errors();
+
+            return fail($errors, 406, array_values($errors)[0][0]);
+        }
+
         return parent::render($request, $exception);
     }
 

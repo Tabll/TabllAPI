@@ -13,7 +13,7 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Layout\Content;
 use Dcat\Admin\Show;
-use Dcat\Admin\Controllers\AdminController;
+use Dcat\Admin\Http\Controllers\AdminController;
 use Dcat\Admin\Widgets\Card;
 use function Clue\StreamFilter\fun;
 
@@ -43,17 +43,17 @@ class HotNewsCurrentController extends AdminController
 
             $grid->model()->orderBy('rank');
             $grid->id->hide();
-            $grid->uuid->responsive()->label('primary');
-            $grid->column('connecter', '相关')->responsive()->label('primary')
+            $grid->uuid->label('primary');
+            $grid->column('connecter', '相关')->label('primary')
                 ->expand(HotNewsHistoryRender::make(['class' => \App\Models\HotNews\HotNewsCurrent::class]));
-            $grid->rank->responsive()->sortable();
+            $grid->rank->sortable();
             $grid->content;
             $grid->labels->pluck('label')->label();
-            $grid->source->responsive()->filter(
+            $grid->source->filter(
                 Grid\Column\Filter\In::make(HotNewsLabels::$source)
             )->using(HotNewsLabels::$source)->label(HotNewsLabels::$sourceColor);
-            $grid->heat->responsive();
-            $grid->update_time->responsive();
+            $grid->heat;
+            $grid->update_time;
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->equal('id');

@@ -22,11 +22,7 @@ class CalendarControllerTest extends TestCase
     {
         $response = $this->get('api/calender/simple');
 
-        $response->assertStatus(200)
-            ->assertJson([
-                'code' => ResponseJson::RESPONSE_CODE,
-                'message' => ResponseJson::RESPONSE_MESSAGE,
-            ]);
+        $response->assertStatus(200);
     }
 
     /**

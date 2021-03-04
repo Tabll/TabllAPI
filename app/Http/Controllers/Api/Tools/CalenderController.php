@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Tools;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tools\GetHolidayRequest;
 use App\Http\Requests\Tools\GetSimpleHolidayRequest;
+use App\Http\Resources\Tools\SimpleHolidayResource;
 use App\Models\Tools\Calendar;
 use Carbon\Carbon;
 use DB;
@@ -25,14 +26,14 @@ class CalenderController extends Controller
         $year = $request->input('year', Carbon::now()->year);
         $month = $request->input('month');
         $calendar = Calendar::where('type', '=', $type)
-            ->where('region', '=', $region)
+            ->whereRegion($region)
             ->where('year', '=', $year)
             ->when($month, function ($query) use ($month) {
                 $query->where(DB::raw('MONTH(date)'), '=', $month);
             })
             ->get();
 
-        return response()->success($calendar->pluck('date'));
+        return SimpleHolidayResource::collection($calendar);
     }
 
     /**

@@ -1,0 +1,10 @@
+diff a/config/admin.php b/config/admin.php	(rejected hunks)
+@@ -229,7 +229,7 @@
+     'upload' => [
+ 
+         // Disk in `config/filesystem.php`.
+-        'disk' => 'q_cloud',
++        'disk' => 'public',
+ 
+         // Image and file upload path under the disk above.
+         'directory' => [

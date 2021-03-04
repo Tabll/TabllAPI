@@ -37,8 +37,17 @@ return [
     | 默认：/vendors/dcat-admin/images/logo.png
     |
     */
-    'logo-mini' => "",
-//    'logo-mini' => null,
+    'logo-mini' => '<img src="/vendor/dcat-admin/images/logo.png">',
+
+    /*
+     |--------------------------------------------------------------------------
+     | User default avatar
+     |--------------------------------------------------------------------------
+     |
+     | Set a default avatar for newly created users.
+     |
+     */
+    'default_avatar' => '@admin/images/default-avatar.jpg',
 
     /*
     |--------------------------------------------------------------------------
@@ -51,14 +60,20 @@ return [
     |
     */
     'route' => [
+        'domain' => env('ADMIN_ROUTE_DOMAIN'),
+
         'prefix' => env('ADMIN_ROUTE_PREFIX', 'admin'),
+
         'namespace' => 'App\\Admin\\Controllers',
+
         'middleware' => ['web', 'admin'],
+
+        'enable_session_middleware' => false,
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | 安装设置
+    | dcat-admin install directory
     |--------------------------------------------------------------------------
     |
     | The installation directory of the controller and routing configuration
@@ -109,7 +124,9 @@ return [
     */
     'auth' => [
         'enable' => true,
+
         'controller' => App\Admin\Controllers\AuthController::class,
+
         'guard' => 'admin',
 
         'guards' => [
@@ -135,9 +152,12 @@ return [
             'auth/login',
             'auth/logout',
         ],
+
+        'enable_session_middleware' => false,
     ],
 
     'grid' => [
+
         /*
         |--------------------------------------------------------------------------
         | The global Grid action display class.
@@ -193,6 +213,8 @@ return [
 
         // Whether enable menu bind to a permission.
         'bind_permission' => true,
+
+        'default_icon' => 'feather icon-circle',
     ],
 
     /*
@@ -205,6 +227,7 @@ return [
     |
     */
     'upload' => [
+
         // Disk in `config/filesystem.php`.
         'disk' => 'q_cloud',
 
@@ -224,6 +247,7 @@ return [
     |
     */
     'database' => [
+
         // Database connection for following tables.
         'connection' => '',
 
@@ -244,51 +268,14 @@ return [
         'menu_model' => Dcat\Admin\Models\Menu::class,
 
         // Pivot table for table above.
-        'operation_log_table'    => 'admin_operation_log',
-        'user_permissions_table' => 'admin_user_permissions',
         'role_users_table'       => 'admin_role_users',
         'role_permissions_table' => 'admin_role_permissions',
         'role_menu_table'        => 'admin_role_menu',
         'permission_menu_table'  => 'admin_permission_menu',
+        'settings_table'         => 'admin_settings',
+        'extensions_table'       => 'admin_extensions',
+        'extension_histories_table' => 'admin_extension_histories',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | User operation log setting
-    |--------------------------------------------------------------------------
-    |
-    | By setting this option to open or close operation log in dcat-admin.
-    |
-    */
-    'operation_log' => [
-
-        'enable' => true,
-
-        // Only logging allowed methods in the list
-        'allowed_methods' => ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
-
-        'secret_fields' => [
-            'password',
-            'password_confirmation',
-        ],
-
-        // Routes that will not log to database.
-        // All method to path like: auth/logs/*/edit
-        // or specific method to path like: get:auth/logs.
-        'except' => [
-            'auth/logs*',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Admin map field provider
-    |--------------------------------------------------------------------------
-    |
-    | Supported: "tencent", "google", "yandex".
-    |
-    */
-    'map_provider' => 'google',
 
     /*
     |--------------------------------------------------------------------------
@@ -298,14 +285,20 @@ return [
     | This value is the layout of admin pages.
     */
     'layout' => [
-        // indigo, blue, blue-light, blue-dark, green
-        'color' => 'blue',
+        // default, blue, blue-light, green
+        'color' => 'default',
 
-        'body_class' => '',
+        // sidebar-separate
+        'body_class' => [],
+
+        'horizontal_menu' => false,
 
         'sidebar_collapsed' => false,
 
-        'sidebar_dark' => false,
+        // light, primary, dark
+        'sidebar_style' => 'light',
+
+        'dark_mode_switch' => false,
 
         // bg-primary, bg-info, bg-warning, bg-success, bg-danger, bg-dark
         'navbar_color' => '',
@@ -317,7 +310,7 @@ return [
     |--------------------------------------------------------------------------
     |
     */
-    'exception_handler' => \Dcat\Admin\Exception\Handler::class,
+    'exception_handler' => Dcat\Admin\Exception\Handler::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -330,24 +323,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Extension Directory
+    | Extension
     |--------------------------------------------------------------------------
-    |
-    | When you use command `php artisan admin:extend` to generate extensions,
-    | the extension files will be generated in this directory.
     */
-    'extension_dir' => app_path('Admin/Extensions'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Settings for extensions.
-    |--------------------------------------------------------------------------
-    |
-    | You can find all available extensions here
-    | https://github.com/dcat-admin-extensions.
-    |
-    */
-    'extensions' => [
-
+    'extension' => [
+        // When you use command `php artisan admin:ext-make` to generate extensions,
+        // the extension files will be generated in this directory.
+        'dir' => base_path('dcat-admin-extensions'),
     ],
 ];
